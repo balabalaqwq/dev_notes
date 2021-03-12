@@ -167,3 +167,43 @@ import 'package:flutter/services.dart';
 
 
 
+### 5.倒计时
+
+```
+//倒计时方法
+startCountdown() {
+  //倒计时时间
+  countdownTime = 60;
+  final call = (timer) {
+    if (countdownTime < 1) {
+      setState(() {
+        verifybordercolor = ColorConfig.border_blue;
+        smsCodeText = "获取验证码";
+        autofocus = true;
+      });
+    } else {
+      if (countdownTime > 0) {
+        setState(() {
+          verifybordercolor = ColorConfig.home_hint_gray;
+          smsCodeText = countdownTime.toString() + "秒后重发";
+          autofocus = false;
+        });
+      }
+      setState(() {
+        countdownTime -= 1;
+      });
+    }
+  };
+  if (timer == null) {
+    timer = Timer.periodic(Duration(seconds: 1), call);
+  }
+}
+```
+
+### 5.手机号判断
+
+```
+RegExp exp = RegExp(
+    r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
+bool matched = exp.hasMatch(mobilePhone);
+```
