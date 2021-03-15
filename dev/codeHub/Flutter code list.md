@@ -207,3 +207,26 @@ RegExp exp = RegExp(
     r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
 bool matched = exp.hasMatch(mobilePhone);
 ```
+
+### 3.播报
+
+```
+Swiper(
+  itemBuilder: (BuildContext context, int index) {
+    return content();
+  },
+  autoplayDisableOnInteraction: false,
+  loop: true,
+  itemCount: broadcastList.length,
+  control: null,
+  duration: 500,
+  //禁用手势
+  physics: new NeverScrollableScrollPhysics(),
+  //水平方向
+  scrollDirection: Axis.horizontal,
+  viewportFraction: 0.95,
+  autoplay: true,
+  //点击响应
+  onTap: (int) {},
+)
+```
