@@ -73,3 +73,29 @@ class _InputState extends State<Input> with WidgetsBindingObserver {
 }
 ```
 
+### 2.点击空白收起键盘 （TextField失去焦点）
+
+声明FocusNode：
+
+```
+final FocusNode focusNode = new FocusNode();
+```
+
+在body外层加GestureDetector()：
+
+```
+ GestureDetector(
+  behavior: HitTestBehavior.translucent,
+  onTap: () {
+    //失去TextField焦点
+    focusNode.unfocus();
+  },
+  child: _buildBody(),
+),
+```
+
+在TextField()添加配置：
+
+```
+focusNode: focusNode,
+```

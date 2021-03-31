@@ -4,7 +4,7 @@ https://www.jianshu.com/p/f942a90aa42c
 
 实现ListView中嵌套ListView
 
-![Video_20210224_060853_179](C:\Users\卐\Desktop\MDs\Flutter Widgets\Video_20210224_060853_179.gif)
+![Video_20210224_060853_179](https://gitee.com/balabalaqwq/pics/raw/master/Video_20210224_060853_179.gif)
 
 外部ListView:
 

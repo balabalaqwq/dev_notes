@@ -714,9 +714,9 @@ Flutter 中拥有需要将近30种内置的 布局Widget，其中常用有 Conta
 |                                  | CustomScrollView      | 可以包含多个滚动模型。                                       |
 | 不支持基于Sliver的延迟实例化模型 | SingleChildScrollView | 只有一个子 Widget。期望内容不多时使用，过多导致性能差        |
 
-...![](C:\Users\卐\Desktop\widget图鉴_1.png)
+![](https://gitee.com/balabalaqwq/pics/raw/master/widget%E5%9B%BE%E9%89%B4_1.png)
 
-![widget图鉴_2](C:\Users\卐\Desktop\widget图鉴_2.png)
+![widget图鉴_2](https://gitee.com/balabalaqwq/pics/raw/master/widget%E5%9B%BE%E9%89%B4_2%20(Large).png)
 
 ### 3.4、Flutter页面
 

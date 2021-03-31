@@ -1,6 +1,6 @@
 https://www.cnblogs.com/qqcc1388/p/14046355.html
 
-![image-20210224164527650](C:\Users\卐\AppData\Roaming\Typora\typora-user-images\image-20210224164527650.png)
+![image-20210224164527650](https://gitee.com/balabalaqwq/pics/raw/master/image-20210224164527650.png)
 
 
 

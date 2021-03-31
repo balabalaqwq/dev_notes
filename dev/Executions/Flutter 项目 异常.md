@@ -1,3 +1,5 @@
+
+
 # Flutter 项目 异常
 
 ## 1.运行异常Execution failed for task ':app:compileFlutterBuildDebug'.
@@ -171,6 +173,22 @@ flutter packages pub run build_runner build test --delete-conflicting-outputs
 
   ### 解决方法：
 
-  重启电脑。。。
+  重启电脑。。
 
-  
+## 5.flutter运行闪退Could not update files on device: HttpException: Connection closed before full header was received, uri = http://127.0.0.1:27975/aUGLHym0g2Y=/
+
+
+
+闪退时出现错误：
+
+```
+Lost connection to device.
+Could not update files on device: HttpException: Connection closed before full header was received, uri = http://127.0.0.1:27975/aUGLHym0g2Y=/
+```
+
+可能原因：
+
+1.遇到具体原因：
+
+启动页图片太大（尺寸、大小），手机无法适应，应用出现闪退
+
