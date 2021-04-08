@@ -1,0 +1,560 @@
+## 意见反馈 
+
+### 图片列表 BottomSheet 
+
+### packages：ImagePicker
+
+效果：
+
+![65b73e51e9e59ca7e03b5544a21e2d4](https://gitee.com/balabalaqwq/pics/raw/master/65b73e51e9e59ca7e03b5544a21e2d4.jpg)
+
+![dd554830435a4894f06dab6a55b3946](https://gitee.com/balabalaqwq/pics/raw/master/dd554830435a4894f06dab6a55b3946.jpg)
+
+![6e483fb216d033e7ab622f4beccbea4](https://gitee.com/balabalaqwq/pics/raw/master/6e483fb216d033e7ab622f4beccbea4.jpg)
+
+```
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/screenutil.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:vma_ky/Bloc/FeedBackBloc.dart';
+import 'package:vma_ky/Bloc/UpdateBloc.dart';
+import 'package:vma_ky/Common/Config.dart';
+import 'package:vma_ky/UI/VmaCardView.dart';
+import 'package:vma_ky/UI/VmaScaleClick.dart';
+import 'package:vma_ky/Utils/StringUtils.dart';
+import 'package:vma_ky/Utils/ToastUtil.dart';
+import 'package:ynd_sdk/index.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:vma_ky/Common/CommonUtil.dart';
+
+class FeedBackPage extends StatefulWidget {
+  @override
+  _FeedBackPageState createState() => _FeedBackPageState();
+}
+
+class _FeedBackPageState extends State<FeedBackPage> {
+  TextEditingController opinionDesc = new TextEditingController();
+  List<File> mFileList = List();
+  List<String> mPathList = List();
+  File mSelectedImageFile;
+
+  List<ProblemTypeInfo> problemList = new List();
+  String problemType;
+  int problemTypeId;
+  bool loadFinish = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    // if (problemType == null) {
+    //   problemType = types[0];
+    // }
+    feedBackBloc.getProblemType(callback: (info) {
+      setState(() {
+        problemList.addAll(info);
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        designSize: Size(750, 1334), allowFontScaling: false);
+    print('fileList的内容: $mFileList');
+    if (mSelectedImageFile != null) {
+      mFileList.add(mSelectedImageFile);
+      mPathList.add(mSelectedImageFile.path);
+    }
+    mSelectedImageFile = null;
+    return Scaffold(
+      floatingActionButton: _buildFloatingActionBtn(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      resizeToAvoidBottomPadding: true,
+      appBar: AppBar(
+        centerTitle: true,
+        brightness: Brightness.light,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Image.asset(
+            'images/icon_back.png',
+            width: ScreenUtil().setHeight(40),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          '用户反馈',
+          style: TextStyle(
+              fontSize: ScreenUtil().setSp(36, allowFontScalingSelf: false),
+              color: Colors.black,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Container(
+                color: Colors.white,
+                height: double.maxFinite,
+                child: new Column(
+                  children: <Widget>[
+                    _problemView(),
+                    _updatePicsView(),
+                  ],
+                )
+            ),
+            Visibility(
+                visible: loadFinish,
+                child: Container(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      child: CircularProgressIndicator(),
+                      width: 50.h,
+                      height: 50.h,
+                    )
+                )
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //相机拍照或图库选择照片布局
+  _renderBottomMenuItem(title, ImageSource source) {
+    return VmaScaleClick(
+      scale: 1.1,
+      child: Container(
+        height: ScreenUtil().setHeight(99),
+        child: Center(
+            child: Text(
+          title,
+          style: TextStyle(
+            fontSize: ScreenUtil().setSp(32),
+          ),
+        )),
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        ImagePicker.pickImage(source: source).then((result) {
+          setState(() {
+            mSelectedImageFile = result;
+            print("执行刷新:");
+          });
+        });
+      },
+    );
+  }
+
+  //弹出底部选择框-问题类型
+  Widget _bottomSheetForTypeBuilder(BuildContext context) {
+    String temp;
+    int id;
+    if(problemList.length > 0) {
+      temp = problemList[0].problemTypeName;
+      id = problemList[0].id;
+    }
+    return Container(
+        height: ScreenUtil().setHeight(500),
+        child: Padding(
+          padding: EdgeInsets.only(left: 0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: ScreenUtil().setHeight(80),
+                padding: EdgeInsets.only(right: ScreenUtil().setHeight(20)),
+                child: Row(
+                  children: [
+                    Expanded(child: SizedBox()),
+                    GestureDetector(
+                      child: Text(
+                        "完成",
+                        style: TextStyle(
+                            fontSize: ScreenUtil().setSp(32),
+                            color: ColorConfig.org_next_blue),
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        setState(() {
+                          if (temp != null) {
+                            problemType = temp;
+                            problemTypeId = id;
+                          }
+                        });
+                      },
+                    )
+                  ],
+                ),
+              ),
+              Divider(
+                height: ScreenUtil().setHeight(2),
+              ),
+              Container(
+                height: ScreenUtil().setHeight(412),
+                child: CupertinoPicker(
+                    backgroundColor: Colors.white,
+                    diameterRatio: 1,
+                    // //偏移度
+                    // offAxisFraction: 0.4,
+                    //间距
+                    squeeze: 1.4,
+                    itemExtent: ScreenUtil().setHeight(70),
+                    onSelectedItemChanged: (position) {
+                      debugPrint('当前选择${problemList[position]}');
+                      temp = problemList[position].problemTypeName;
+                      id = problemList[position].id;
+                    },
+                    children:
+                        problemList.map((item) => Center(child: Text(item.problemTypeName))).toList()),
+              )
+            ],
+          ),
+        ));
+  }
+
+  //弹出底部选择框-图片来源
+  Widget _bottomSheetBuilder(BuildContext context) {
+    return Container(
+        height: ScreenUtil().setHeight(200),
+        child: Padding(
+          padding: EdgeInsets.only(left: 0),
+          child: Column(
+            children: <Widget>[
+              _renderBottomMenuItem("相机拍照", ImageSource.camera),
+              Divider(
+                height: ScreenUtil().setHeight(2),
+              ),
+              _renderBottomMenuItem("图库选择照片", ImageSource.gallery)
+            ],
+          ),
+        ));
+  }
+
+  // 选择问题类型
+  pickProblemType(ctx) {
+    showModalBottomSheet<void>(
+        context: context, builder: _bottomSheetForTypeBuilder);
+  }
+
+  // 选择弹出相机拍照或者从图库选择图片
+  pickImage(ctx) {
+    // 如果已添加了4张图片，则提示不允许添加更多
+    if (mFileList.length >= 4) {
+      Fluttertoast.showToast(msg: "最多只能添加4张图片！");
+      return;
+    }
+    showModalBottomSheet<void>(context: context, builder: _bottomSheetBuilder);
+  }
+
+  //问题类型与描述
+  Widget _problemView() {
+    return VmaCardView(
+        radius: 10,
+        height: ScreenUtil().setHeight(200),
+        margin: EdgeInsets.fromLTRB(
+            ScreenUtil().setHeight(10),
+            ScreenUtil().setHeight(10),
+            ScreenUtil().setHeight(10),
+            ScreenUtil().setHeight(10)),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                  left: ScreenUtil().setHeight(20),
+                  right: ScreenUtil().setHeight(10)),
+              height: ScreenUtil().setHeight(98),
+              child: Row(
+                children: [
+                  Text(
+                    "问题类型",
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(36),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(
+                    width: ScreenUtil().setHeight(10),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.all(ScreenUtil().setHeight(10)),
+                      child: VmaScaleClick(
+                        onTap: () {
+                          pickProblemType(context);
+                        },
+                        child: Container(
+                          color: Colors.white,
+                          height: ScreenUtil().setHeight(96),
+                          width: ScreenUtil().setHeight(400),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: ScreenUtil().setHeight(350),
+                                child: Text(
+                                  problemType?? '请选择问题类型',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Color(0xFF333333),
+                                      fontSize: ScreenUtil().setSp(34,
+                                          allowFontScalingSelf: false),
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Image.asset(
+                                'images/icon_right.png',
+                                width: ScreenUtil().setHeight(32),
+                                height: ScreenUtil().setHeight(32),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ))
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: ScreenUtil().setHeight(20),
+                  right: ScreenUtil().setHeight(20)),
+              color: Color(0xFFECECEC),
+              width: ScreenUtil().screenWidthPx,
+              height: ScreenUtil().setHeight(2),
+            ),
+            Container(
+              padding: EdgeInsets.only(
+                  left: ScreenUtil().setHeight(20),
+                  right: ScreenUtil().setHeight(20)),
+              height: ScreenUtil().setHeight(98),
+              child: Row(
+                children: [
+                  Text(
+                    "建议描述",
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(36),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(
+                    width: ScreenUtil().setHeight(20),
+                  ),
+                  Container(
+                    width: ScreenUtil().setHeight(400),
+                    child: TextField(
+                      controller: opinionDesc,
+                      cursorWidth: 1,
+                      cursorColor: Color(0xffCCCCCC),
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(
+                          letterSpacing: 1,
+                          color: Colors.black,
+                          fontSize: ScreenUtil()
+                              .setSp(36, allowFontScalingSelf: false)),
+                      decoration: InputDecoration(
+                        isCollapsed: true,
+                        border: OutlineInputBorder(borderSide: BorderSide.none),
+                        //不需要输入框下划线
+                        // border: InputBorder.none,
+                        hintText: '您对我们的产品或服务的建议',
+                        hintStyle: TextStyle(
+                            // textBaseline: TextBaseline.alphabetic,
+                            letterSpacing: 1, //字符间距
+                            color: Color(0xFFBFBFBF),
+                            fontSize: ScreenUtil()
+                                .setSp(32, allowFontScalingSelf: false)),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ));
+  }
+
+  //输入框和九宫格布局
+  Widget _updatePicsView() {
+    return Expanded(
+      //expande就是listview有多大就有多大,container就是container多大listview就有多大
+      child: VmaCardView(
+        color: Colors.white,
+        radius: 10,
+        margin: EdgeInsets.fromLTRB(
+            ScreenUtil().setHeight(10),
+            ScreenUtil().setHeight(10),
+            ScreenUtil().setHeight(10),
+            ScreenUtil().setHeight(10)),
+        padding: EdgeInsets.fromLTRB(
+            ScreenUtil().setHeight(15),
+            ScreenUtil().setHeight(25),
+            ScreenUtil().setHeight(15),
+            ScreenUtil().setHeight(25)),
+        child: ListView(
+          children: <Widget>[
+            Row(
+              children: [
+                Text(
+                  "上传图片",
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(36),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(
+                  width: ScreenUtil().setHeight(20),
+                ),
+                Text(
+                  "最多上传4张",
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(32),
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff999999),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: ScreenUtil().setHeight(20),
+            ),
+            GridView.count(
+              shrinkWrap: true,
+              primary: false,
+              crossAxisCount: 3,
+              children: List.generate(mFileList.length == 4 ? mFileList.length : mFileList.length + 1, (index) {
+                // 这个方法体用于生成GridView中的一个item
+                var content;
+                if (index == mFileList.length) {
+                  // 添加图片按钮
+                  var addCell = Center(
+                      child: Image.asset(
+                    'images/add_pics.png',
+                    width: ScreenUtil().setHeight(180),
+                    height: ScreenUtil().setHeight(180),
+                  ));
+                  content = GestureDetector(
+                    onTap: () {
+                      // 添加图片
+                      CommonUtil.requestPermission(Permission.storage);
+                      pickImage(context);
+                    },
+                    child: addCell,
+                  );
+                } else {
+                  // 被选中的图片
+                  content = Stack(
+                    children: <Widget>[
+                      Center(
+                        child: Image.file(
+                          mFileList[index],
+                          width: ScreenUtil().setHeight(170),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: VmaScaleClick(
+                          onTap: () {
+                            mFileList.removeAt(index);
+                            mPathList.removeAt(index);
+                            mSelectedImageFile = null;
+                            setState(() {});
+                          },
+                          scale: 1.1,
+                          child: Image.asset(
+                            'images/close_b.png',
+                            width: ScreenUtil().setHeight(32),
+                            height: ScreenUtil().setHeight(32),
+                          ),
+                        ),
+                      )
+                    ],
+                  );
+                }
+                return Container(
+                  margin: EdgeInsets.fromLTRB(
+                      ScreenUtil().setHeight(10),
+                      ScreenUtil().setHeight(10),
+                      ScreenUtil().setHeight(10),
+                      ScreenUtil().setHeight(10)),
+                  color: const Color(0xFFffffff),
+                  child: content,
+                );
+              }),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionBtn() {
+    return VmaScaleClick(
+      onTap: () {
+        if(isNull(problemType)) {
+          ToastUtil.showToast("请选择问题类型");
+          return;
+        } else if(isNull(opinionDesc.text.toString())) {
+          ToastUtil.showToast("请输入描述");
+          return;
+        }
+        setState(() {
+          loadFinish = true;
+        });
+
+        if(mPathList.length > 0) {
+          updateBloc.updateImages(mPathList, callback: (info) {
+            String images = "";
+            info.forEach((element) {
+              images = images + element + "," ;
+            });
+            feedBackBloc.createFeedback(problemType, problemTypeId, opinionDesc.text.toString(), images: images, callback: (info) {
+              setState(() {
+                loadFinish = false;
+              });
+              Navigator.pop(context);
+            });
+          });
+        } else {
+          feedBackBloc.createFeedback(problemType, problemTypeId, opinionDesc.text.toString(), callback: (info) {
+            setState(() {
+              loadFinish = false;
+            });
+            Navigator.pop(context);
+          });
+        }
+
+      },
+      child: Container(
+        margin: EdgeInsets.only(
+            top: ScreenUtil().setHeight(20), bottom: ScreenUtil().setHeight(20)),
+        width: ScreenUtil().setHeight(350),
+        height: ScreenUtil().setHeight(80),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(new Radius.circular(30)),
+          gradient: LinearGradient(colors: <Color>[
+            //背景渐变
+            Color(0xFF2F5AFE),
+            Color(0xFF5C93FF),
+          ]),
+        ),
+        child: Center(
+          child: Text(
+            "提交",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontSize: ScreenUtil().setSp(36)),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```

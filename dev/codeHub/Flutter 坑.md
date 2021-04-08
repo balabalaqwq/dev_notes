@@ -99,3 +99,25 @@ final FocusNode focusNode = new FocusNode();
 ```
 focusNode: focusNode,
 ```
+
+
+
+### 3.Flutter使用 floatingActionButton和 Textfield时，输入时底部界面被收缩
+
+https://stackoverflow.com/questions/60224672/flutter-floatingactionbutton-with-textfield-is-not-fully-above-keyboard-need-so
+
+如图：
+
+bug界面：
+
+![aea8b0024d79f37e82628461c96c9c4](https://gitee.com/balabalaqwq/pics/raw/master/aea8b0024d79f37e82628461c96c9c4.jpg)
+
+原界面：
+
+![bf43c7a06444cf75c6a683889637ae0](https://gitee.com/balabalaqwq/pics/raw/master/bf43c7a06444cf75c6a683889637ae0.jpg)
+
+
+
+#### 解决办法：
+
+界面body使用 scroll view （可滚动布局）

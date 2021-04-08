@@ -37,7 +37,9 @@ bool loadFinish = false;//loading状态
             if(request.url.contains("tel")) {
               await launch(request.url);
             }
-            return NavigationDecision.navigate;
+            if (Platform.isIOS) {//解决Android跳转拨号界面后webview tel字段报错
+                return NavigationDecision.navigate;//解决ios不显示 
+              }
           },
           onPageFinished: (url) {
             debugPrint("输出结果${url}");
