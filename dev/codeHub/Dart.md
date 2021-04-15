@@ -16,6 +16,14 @@
 
 
 
+### replace()
+
+手机号隐藏第4-7位
+
+```
+str.replaceRange(3, 7, "****")
+```
+
 # List
 
 ### sort()  排序
