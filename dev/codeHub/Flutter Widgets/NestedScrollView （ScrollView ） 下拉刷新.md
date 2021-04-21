@@ -1,4 +1,4 @@
-## NestedScrollView 下拉刷新
+## NestedScrollView （ScrollView ）下拉刷新
 
 参考及引用https://blog.csdn.net/zl18603543572/article/details/104035299
 
@@ -9,6 +9,19 @@
 https://biglead.blog.csdn.net/article/details/109477589
 
 例：
+
+> 注意：_buildNestedScrollView()不能为SingleChildScrollView()，可用
+>
+> CustomScrollView(
+>       slivers: [
+>         SliverToBoxAdapter(
+>           child: _buildBody();
+>           ),
+>      ]
+>
+> )
+>
+> 代替
 
 ```
 Scaffold(
