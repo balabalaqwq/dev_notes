@@ -192,3 +192,91 @@ Could not update files on device: HttpException: Connection closed before full h
 
 启动页图片太大（尺寸、大小），手机无法适应，应用出现闪退
 
+
+
+## 6.Scaffold.of() called with a context that does not contain a Scaffold.
+
+- 使用Scaffold的snackbar、BottomSheet等组件时找不到context.
+
+- 例如：
+
+- ```
+  Scaffold.of(context).showBottomSheet((context) => _buildARCodeView(context));
+  ```
+
+  
+
+- ### 报错信息：
+
+  ```
+  ======== Exception caught by gesture ===============================================================
+  The following assertion was thrown while handling a gesture:
+  Scaffold.of() called with a context that does not contain a Scaffold.
+  
+  No Scaffold ancestor could be found starting from the context that was passed to Scaffold.of(). This usually happens when the context provided is from the same StatefulWidget as that whose build function actually creates the Scaffold widget being sought.
+  
+  There are several ways to avoid this problem. The simplest is to use a Builder to get a context that is "under" the Scaffold. For an example of this, please see the documentation for Scaffold.of():
+    https://api.flutter.dev/flutter/material/Scaffold/of.html
+  A more efficient solution is to split your build function into several widgets. This introduces a new context from which you can obtain the Scaffold. In this solution, you would have an outer widget that creates the Scaffold populated by instances of your new inner widgets, and then in these inner widgets you would use Scaffold.of().
+  A less elegant but more expedient solution is assign a GlobalKey to the Scaffold, then use the key.currentState property to obtain the ScaffoldState rather than using the Scaffold.of() function.
+  
+  The context used was: ShareEarnPage
+    dependencies: [MediaQuery]
+    state: _ShareEarnPageState#9b906
+  When the exception was thrown, this was the stack: 
+  #0      Scaffold.of (package:flutter/src/material/scaffold.dart:1472:5)
+  #1      _ShareEarnPageState._click (package:vma_ky/Page/ShareEarnPage.dart:280:18)
+  #2      _ShareEarnPageState._buildBtn.<anonymous closure> (package:vma_ky/Page/ShareEarnPage.dart:226:9)
+  #3      GestureRecognizer.invokeCallback (package:flutter/src/gestures/recognizer.dart:183:24)
+  #4      TapGestureRecognizer.handleTapUp (package:flutter/src/gestures/tap.dart:598:11)
+  ...
+  Handler: "onTap"
+  Recognizer: TapGestureRecognizer#7c214
+    debugOwner: GestureDetector
+    state: ready
+    won arena
+    finalPosition: Offset(295.7, 695.0)
+    finalLocalPosition: Offset(31.1, 33.2)
+    button: 1
+    sent tap down
+  ====================================================================================================
+  
+  ```
+
+  ### 造成原因：
+
+  找不到context
+
+  ### 解决方法：
+
+  使用在Scaffold() 内部使用Builder（）构建内部嵌套
+
+  如：
+
+```
+ @override
+  Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        designSize: Size(750, 1334), allowFontScaling: false);
+    return Scaffold(
+    ...
+ body: Builder(
+        builder: (BuildContext context) {
+          return _buildBody(context);
+        },
+      ),
+    );
+  }
+  _buildBody(BuildContext context) {
+    return RaisedButton(
+                    onPressed: () {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('测试'),
+                        ),
+                      );
+                    },
+                  );
+    }
+```
+
