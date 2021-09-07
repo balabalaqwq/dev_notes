@@ -8,7 +8,7 @@ ios:见flutter_sms
 
 ```
 if (Platform.isAndroid) {
-// iOS：收件人用;隔开
+// Android：收件人用;隔开
   var uri =
       "sms:+${"10000;10086;"}?body=${"短信内容"}";
   await launch(uri);
