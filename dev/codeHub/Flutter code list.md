@@ -125,6 +125,11 @@
 ```
 //判断是否全选
  	selectedCustomerList.length == customerList.length;
+//优化
+  (RunData.selectedPeopleList.isNotEmpty &&
+                            RunData.selectedPeopleList
+                                .toSet()
+                                .containsAll(state.list))
 ```
 
 ### 4.返回键拦截（再按一次退出APP）
@@ -200,7 +205,7 @@ startCountdown() {
 }
 ```
 
-### 5.手机号判断
+### 6.手机号判断
 
 ```
 RegExp exp = RegExp(
@@ -208,7 +213,7 @@ RegExp exp = RegExp(
 bool matched = exp.hasMatch(mobilePhone);
 ```
 
-### 3.播报
+### 7.播报
 
 ```
 Swiper(
@@ -229,4 +234,11 @@ Swiper(
   //点击响应
   onTap: (int) {},
 )
+```
+
+
+### 8.日期间隔
+
+```
+DateTime.now().difference(DateTime(2019, 3, 2)).inDays.toString()+' 天'
 ```
