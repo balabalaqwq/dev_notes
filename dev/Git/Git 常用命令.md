@@ -9,6 +9,11 @@ git config -global
 > `git config --global user.name "wntn"` 设置name
 > `git config --global user.email wntn@xx.com`  设置email
 
+> `git config --global https.proxy http://127.0.0.1:1080`  设置代理
+> `git config --global https.proxy https://127.0.0.1:1080`  设置代理
+> `git config --global --unset http.proxy`  取消代理
+> `git config --global --unset https.proxy`  取消代理
+
 > `git config --list`  查看配置列表
 
 ## init

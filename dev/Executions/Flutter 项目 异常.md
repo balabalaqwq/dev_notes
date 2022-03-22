@@ -280,3 +280,126 @@ Could not update files on device: HttpException: Connection closed before full h
     }
 ```
 
+
+
+## 7.打包编译异常
+
+- ### 报错信息：
+
+  ```
+  FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':keyboard_visibility:verifyReleaseResources'.
+> A failure occurred while executing com.android.build.gradle.internal.tasks.Workers$ActionFacade
+  > Android resource linking failed
+     C:\Users\admin\.gradle\caches\transforms-2\files-2.1\799a4313fcc4980072ee2e97207b51c1\core-1.1.0\res\values\values.xml:142:5-173:25: AAPT: error: resource android:attr/fontVariationSettings not found.
+
+     C:\Users\admin\.gradle\caches\transforms-2\files-2.1\799a4313fcc4980072ee2e97207b51c1\core-1.1.0\res\values\values.xml:142:5-173:25: AAPT: error: resource android:attr/ttcIndex not found.
+
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 10m 26s
+  ```
+
+  ### 造成原因：
+https://blog.csdn.net/spinchao/article/details/105660058
+
+  ### 解决方法：
+例如：extranal libaries -> flutter plugings 某个库的Android目录，然后是gradle文件，查看。这里 一个库是27，其他28.修改后问题及解决
+参考 https://blog.csdn.net/spinchao/article/details/105660058
+
+
+## 8.打包编译异常
+ ```
+  Execution failed for task ':app:transformClassesAndResourcesWithR8ForRelease'.
+ ```
+
+- ### 报错信息：
+
+  ```
+  Execution failed for task ':app:transformClassesAndResourcesWithR8ForRelease'.
+  ```
+
+  ### 造成原因：
+
+
+  ### 解决方法：
+在android下gradle.properties里边配置
+  ```
+   android.enableR8=false
+  ```
+
+## 8.打包编译异常
+
+- ### 报错信息：
+
+  ```
+  FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':keyboard_visibility:verifyReleaseResources'.
+> A failure occurred while executing com.android.build.gradle.internal.tasks.Workers$ActionFacade
+  > Android resource linking failed
+     C:\Users\admin\.gradle\caches\transforms-2\files-2.1\799a4313fcc4980072ee2e97207b51c1\core-1.1.0\res\values\values.xml:142:5-173:25: AAPT: error: resource android:attr/fontVariationSettings not found.
+
+     C:\Users\admin\.gradle\caches\transforms-2\files-2.1\799a4313fcc4980072ee2e97207b51c1\core-1.1.0\res\values\values.xml:142:5-173:25: AAPT: error: resource android:attr/ttcIndex not found.
+
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 10m 26s
+  ```
+
+  ### 造成原因：
+https://blog.csdn.net/spinchao/article/details/105660058
+
+  ### 解决方法：
+例如：extranal libaries -> flutter plugings 某个库的Android目录，然后是gradle文件，查看。这里 一个库是27，其他28.修改后问题及解决
+参考 https://blog.csdn.net/spinchao/article/details/105660058
+
+
+## 8.打包编译异常
+ ```
+  Execution failed for task ':app:transformClassesAndResourcesWithProguardForRelease'
+ ```
+
+- ### 报错信息：
+
+  ```
+  Warning: there were 1185 unresolved references to classes or interfaces.
+          You may need to add missing library jars or update their versions.
+          If your code works fine without the missing classes, you can suppress
+          the warnings with '-dontwarn' options.
+
+  Execution failed for task ':app:transformClassesAndResourcesWithProguardForRelease'
+  ```
+
+  ### 造成原因：
+  AS混淆时出现的错误
+
+  ### 解决方法：
+  根据warning提示在android/app/proguard-rules.pro里配置
+  例如：
+  ```
+    -dontwarn com.hyphenate.**
+    -keep class com.hyphenate.** { *; }
+    -dontwarn com.sun.jna.**
+    -keep class com.sun.jna.** { *; }
+    -dontwarn okhttp3.internal.**
+    -keep class okhttp3.internal.** { *; }
+    -dontwarn com.sangcomz.fishbun.adapter.image.impl.**
+    -keep class com.sangcomz.fishbun.adapter.image.impl.** { *; }
+    -dontwarn me.yohom.amap_location_fluttify.sub_handler.**
+    -keep class me.yohom.amap_location_fluttify.sub_handler.** { *; }
+ ```
+
+
+
