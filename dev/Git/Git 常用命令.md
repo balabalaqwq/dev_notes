@@ -14,6 +14,9 @@ git config -global
 > `git config --global --unset http.proxy`  取消代理
 > `git config --global --unset https.proxy`  取消代理
 
+> `git config --global http.sslVerify "false"` 解除ssl验证
+
+
 > `git config --list`  查看配置列表
 
 ## init
