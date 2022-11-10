@@ -86,7 +86,7 @@
         return new String(arrayOfChar);
     }`
 
-   ` /**
+   `/**
      * 工具方法
      * 多个数组合并
      * @param first
